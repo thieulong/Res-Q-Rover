@@ -1,23 +1,37 @@
-import serial
+import RPi.GPIO as GPIO
 import time
 
-# Set up serial connection
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
-ser.reset_input_buffer()
+GPIO.setmode(GPIO.BCM)
+TRIG_PIN = 23
+ECHO_PIN = 24
 
-#define ultrasonic sensor command
-ultrasonic_sensor_command = b'd\n'
-ser.write(ultrasonic_sensor_command)
+def measure_distance():
+    GPIO.setup(TRIG_PIN, GPIO.OUT)
+    GPIO.setup(ECHO_PIN, GPIO.IN)
 
-def get_distance():
-    ser.write(ultrasonic_sensor_command)
+    GPIO.output(TRIG_PIN, GPIO.HIGH)
+    time.sleep(0.00001)
+    GPIO.output(TRIG_PIN, GPIO.LOW)
 
-    ser.readline()
-    if ser.in_waiting > 0:
-        distance = ser.readline().decode('utf-8')
-        print(distance)
-        return distance
-        
+    pulse_start = time.time()
+    while GPIO.input(ECHO_PIN) == GPIO.LOW:
+        pulse_start = time.time()
 
-distance = get_distance()
-print(distance)
+    pulse_end = time.time()
+    while GPIO.input(ECHO_PIN) == GPIO.HIGH:
+        pulse_end = time.time()
+
+    pulse_duration = pulse_end - pulse_start
+    distance = pulse_duration * 17150  
+    distance = round(distance, 2)
+
+    return distance
+
+# try:
+#     while True:
+#         dist = measure_distance()
+#         print("Distance: {} cm".format(dist))
+#         time.sleep(1)
+
+# except KeyboardInterrupt:
+#     GPIO.cleanup()
