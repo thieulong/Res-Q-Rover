@@ -19,7 +19,7 @@ data = pickle.loads(open(encodingsP, "rb").read())
 
 # initialize the video stream and allow the camera sensor to warm up
 vs = VideoStream(src=0,framerate=10).start()
-#vs = VideoStream(usePiCamera=True).start()
+# vs = VideoStream(usePiCamera=True).start()
 time.sleep(2.0)
 
 # start the FPS counter
@@ -33,6 +33,7 @@ while True:
 	frame = imutils.resize(frame, width=500)
 	# Detect the face boxes
 	boxes = face_recognition.face_locations(frame)
+	print(len(boxes))
 	# compute the facial embeddings for each face bounding box
 	encodings = face_recognition.face_encodings(frame, boxes)
 	names = []
@@ -42,7 +43,7 @@ while True:
 		# attempt to match each face in the input image to our known
 		# encodings
 		matches = face_recognition.compare_faces(data["encodings"],
-			encoding, tolerance=0.4)
+			encoding, tolerance=0.35)
 		name = "Unknown" #if face is not recognized, then print Unknown
 
 		# check to see if we have found a match

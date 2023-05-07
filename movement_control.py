@@ -13,7 +13,11 @@ right_command = b'r\n'
 stop_command = b's\n'
 
 def stop_moving(duration=None):
-    ser.write(stop_command)
+    if duration == None:
+        ser.write(stop_command)
+    else:
+        ser.write(stop_command)
+        time.sleep(duration)
 
 def move_forward(duration=None):
     if duration == None:
@@ -58,24 +62,20 @@ def turn_right(duration=None):
 #     command = input("Enter command: ")
 #     if command == 'f':
 #         move_forward()
-#         time.sleep(3)
-#         stop_moving()
 #         time.sleep(1)
+#         stop_moving()
 #     elif command == 'b':
 #         move_backward()
 #         time.sleep(3)
 #         stop_moving()
-#         time.sleep(1)
 #     elif command == 'l':
 #         turn_left()
-#         time.sleep(3)
-#         stop_moving()
 #         time.sleep(1)
+#         stop_moving()
 #     elif command == 'r':
 #         turn_right()
-#         time.sleep(3)
-#         stop_moving()
 #         time.sleep(1)
+#         stop_moving()
 #     elif command == 's':
 #         stop_moving()
     
