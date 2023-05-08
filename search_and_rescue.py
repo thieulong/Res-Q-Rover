@@ -6,13 +6,19 @@ import ultrasonic_sensor
 import movement_control
 import light_control
 import sound_control
+import telegram_message
 import imutils
 import pickle
 import random
 import time
+import json
+import cv2
+
+with open('info.json') as file:
+    info = json.load(file)
 
 print("[!] Res-Q-Rover: Starting up ...")
-search_people = "Paul"
+search_people = info["person_name"]
 searching = True
 face_encodings = "encodings.pickle"
 
@@ -34,18 +40,24 @@ while searching:
     print("[!] Face detected: {}".format(len(face_locations)))
     if len(face_locations) > 0:
         movement_control.stop_moving(duration=3)
-
         detected_encodings = face_recognition.face_encodings(frame, face_locations)
 
         for encoding in detected_encodings:
             matches = face_recognition.compare_faces(face_data["encodings"],encoding, tolerance=0.35)
 
             if True in matches:
+                cv2.imwrite("found.jpg", frame)
                 print("[!] {} is found!".format(search_people))
+
                 movement_control.stop_moving()
                 sound_control.beep()
                 light_control.green_light(duration = 3)
+
                 camera.stop()
+
+                telegram_message.send_image()
+                telegram_message.send_location()
+
                 searching = False
 
             else:
