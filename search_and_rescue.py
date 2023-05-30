@@ -68,9 +68,9 @@ while searching:
         dist = ultrasonic_sensor.measure_distance()
         print("[!] Distance ahead: {}".format(dist))
 
-        if dist < 20:
+        if dist < 50:
             light_control.red_light(duration=0.5)
-            movement_control.move_backward(duration=1)
+            movement_control.move_backward(duration=2)
             direction = random.randint(1,2)
             turn_duration = random.uniform(1,3)
 
@@ -82,7 +82,7 @@ while searching:
                 light_control.blue_light(duration=0.5)
                 movement_control.turn_right(duration=turn_duration)
 
-        elif dist > 20:
+        elif dist > 50:
             light_control.light_off()
             movement_control.move_forward()
 
